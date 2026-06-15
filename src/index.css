@@ -1,0 +1,51 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.css');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white text-ink font-sans antialiased;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  ::selection {
+    @apply bg-royal/20 text-navy;
+  }
+}
+
+@layer components {
+  /* Section title — accent left rule (from design system) */
+  .section-title {
+    @apply border-l-4 border-royal pl-3 text-2xl font-bold text-ink-strong;
+  }
+  /* Translucent pill tag on hero */
+  .hero-tag {
+    @apply inline-block rounded-full border border-white/35 bg-white/[0.18]
+           px-3 py-1 text-sm text-white;
+  }
+  /* Surface card */
+  .card {
+    @apply rounded-card border border-hairline bg-surface p-6;
+  }
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-royal px-5 py-3
+           font-semibold text-white transition-colors duration-200 hover:bg-royal-600;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-white/40
+           px-5 py-3 font-semibold text-white transition-colors duration-200 hover:bg-white/10;
+  }
+  .container-page {
+    @apply mx-auto w-full max-w-content px-5 sm:px-6 lg:px-8;
+  }
+}
+
+/* Thin scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #c7d0e0; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #aab6cc; }
