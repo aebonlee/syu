@@ -156,21 +156,13 @@ export default function Navbar() {
                 <p className="mt-3 text-xs leading-relaxed text-ink-disabled">{panel.desc}</p>
               </div>
 
-              {/* children grid (2×2) */}
-              <div className="grid grid-cols-2 gap-2">
+              {/* children grid (2×2) — 박스 없이 텍스트 링크 */}
+              <div className="grid grid-cols-2 gap-x-10 gap-y-1">
                 {panel.children.map((c) => (
-                  <NavLink
-                    key={c.to}
-                    to={c.to}
-                    className={({ isActive }) =>
-                      `group flex flex-col justify-center rounded-card border px-4 py-3 transition-colors ${
-                        isActive ? 'border-royal bg-royal-50' : 'border-hairline hover:border-royal hover:bg-surface'
-                      }`
-                    }
-                  >
+                  <NavLink key={c.to} to={c.to} className="group flex flex-col py-2.5">
                     {({ isActive }) => (
                       <>
-                        <span className={`text-[14px] font-bold ${isActive ? 'text-royal' : 'text-ink-strong group-hover:text-navy'}`}>{c.label}</span>
+                        <span className={`text-[14px] font-bold transition-colors ${isActive ? 'text-royal' : 'text-ink-strong group-hover:text-royal'}`}>{c.label}</span>
                         <span className="mt-0.5 text-[11px] text-ink-disabled">{c.desc}</span>
                       </>
                     )}
