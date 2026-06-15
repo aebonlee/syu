@@ -19,9 +19,9 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="text-sm font-bold text-white">바로가기</h4>
+          <h4 className="text-sm font-bold text-white">과정 소개</h4>
           <ul className="mt-4 space-y-2 text-sm">
-            <li><Link to="/overview" className="hover:text-white">과정 소개</Link></li>
+            <li><Link to="/overview" className="hover:text-white">과정 개요</Link></li>
             <li><Link to="/curriculum" className="hover:text-white">커리큘럼</Link></li>
             <li><Link to="/outcomes" className="hover:text-white">산출물·기대효과</Link></li>
             <li><Link to="/tools" className="hover:text-white">학습 도구</Link></li>
@@ -29,11 +29,14 @@ export default function Footer() {
         </div>
 
         <div>
-          <h4 className="text-sm font-bold text-white">과정 정보</h4>
-          <ul className="mt-4 space-y-2 text-sm text-white/55">
+          <h4 className="text-sm font-bold text-white">과정별 학습자료</h4>
+          <ul className="mt-4 space-y-2 text-sm">
+            <li><Link to="/materials/automation" className="hover:text-white">AI 에이전트 &amp; n8n 자동화</Link></li>
+            <li><Link to="/materials/multimedia" className="hover:text-white">AI 멀티미디어 &amp; 콘텐츠 제작</Link></li>
+          </ul>
+          <ul className="mt-4 space-y-1 text-xs text-white/45">
             <li>총 {course.totalHours} · {course.structure}</li>
             <li>{course.schedule}</li>
-            <li>{course.audience}</li>
           </ul>
         </div>
       </div>

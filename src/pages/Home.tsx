@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { course, topics, sessions, deliverables } from '../data/curriculum'
+import HeroArt from '../components/HeroArt'
 
 const stats = [
   { num: course.totalHours, label: '총 교육시간' },
@@ -21,35 +22,42 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="container-page relative py-20 md:py-28">
-          <div className="flex items-center gap-3 text-sm font-semibold tracking-wide text-white/80 animate-fade-up">
-            <span className="h-px w-8 bg-white/50" />
-            {course.org} · {course.term}
+        <div className="container-page relative grid items-center gap-10 py-20 md:py-24 lg:grid-cols-[1.15fr_0.85fr]">
+          <div>
+            <div className="flex items-center gap-3 text-sm font-semibold tracking-wide text-white/80 animate-fade-up">
+              <span className="h-px w-8 bg-white/50" />
+              {course.org} · {course.term}
+            </div>
+
+            <h1 className="mt-6 max-w-4xl text-4xl font-extrabold leading-[1.15] md:text-6xl animate-fade-up">
+              텍스트 한 줄에서<br />
+              <span className="text-white">완성 콘텐츠</span>까지, 직접 만든다
+            </h1>
+            <p className="mt-5 text-lg font-medium text-white/85 md:text-xl">
+              Generative AI for Real-World Productivity
+            </p>
+            <p className="mt-4 max-w-2xl text-white/70">
+              코드를 직접 짜지 않아도 됩니다. 자연어만으로 업무를 자동화하고, 웹앱을 배포하고,
+              이미지·영상·음성 콘텐츠를 제작하는 <strong className="text-white">실습 중심 4회차 특강</strong>입니다.
+            </p>
+
+            <div className="mt-7 flex flex-wrap gap-2">
+              {['n8n 자동화', '자연어 웹앱', 'AI 이미지·디자인', 'AI 영상·음성', '저작권 검수'].map((t) => (
+                <span key={t} className="hero-tag">{t}</span>
+              ))}
+            </div>
+
+            <div className="mt-9 flex flex-wrap gap-3">
+              <Link to="/curriculum" className="btn-primary bg-white !text-navy hover:!bg-white/90">
+                커리큘럼 보기 <span aria-hidden>→</span>
+              </Link>
+              <Link to="/overview" className="btn-ghost">과정 소개</Link>
+            </div>
           </div>
 
-          <h1 className="mt-6 max-w-4xl text-4xl font-extrabold leading-[1.15] md:text-6xl animate-fade-up">
-            텍스트 한 줄에서<br />
-            <span className="text-white">완성 콘텐츠</span>까지, 직접 만든다
-          </h1>
-          <p className="mt-5 text-lg font-medium text-white/85 md:text-xl">
-            Generative AI for Real-World Productivity
-          </p>
-          <p className="mt-4 max-w-2xl text-white/70">
-            코드를 직접 짜지 않아도 됩니다. 자연어만으로 업무를 자동화하고, 웹앱을 배포하고,
-            이미지·영상·음성 콘텐츠를 제작하는 <strong className="text-white">실습 중심 4회차 특강</strong>입니다.
-          </p>
-
-          <div className="mt-7 flex flex-wrap gap-2">
-            {['n8n 자동화', '자연어 웹앱', 'AI 이미지·디자인', 'AI 영상·음성', '저작권 검수'].map((t) => (
-              <span key={t} className="hero-tag">{t}</span>
-            ))}
-          </div>
-
-          <div className="mt-9 flex flex-wrap gap-3">
-            <Link to="/curriculum" className="btn-primary bg-white !text-navy hover:!bg-white/90">
-              커리큘럼 보기 <span aria-hidden>→</span>
-            </Link>
-            <Link to="/overview" className="btn-ghost">과정 소개</Link>
+          {/* floating SVG illustrations — 2개 주제 */}
+          <div className="hidden lg:block">
+            <HeroArt />
           </div>
         </div>
 
@@ -122,7 +130,7 @@ export default function Home() {
                   </span>
                 </div>
                 <span className="mt-3 text-[11px] font-semibold uppercase tracking-wider text-ink-disabled">
-                  주제 {s.topicNo}
+                  주제 {s.topicNo} · {s.date}
                 </span>
                 <h3 className="mt-1 text-[15px] font-bold leading-snug text-ink-strong">{s.title}</h3>
                 <p className="mt-2 line-clamp-3 flex-1 text-xs leading-relaxed text-ink-faded">{s.goal}</p>

@@ -6,6 +6,7 @@ const overviewRows: [string, string][] = [
   ['과정명', course.name],
   ['운영 기관', course.org],
   ['운영 시기', course.term],
+  ['교육 일자', `주제① ${topics[0].dates} · 주제② ${topics[1].dates} (총 4회차)`],
   ['운영 방식', course.mode],
   ['총 교육시간', `${course.totalHours} · ${course.structure} · ${course.schedule}`],
   ['강의 구성', '2개 주제 · 4회차'],
@@ -66,6 +67,7 @@ export default function Overview() {
               <thead>
                 <tr className="bg-navy text-white">
                   <th className="px-5 py-3 font-semibold">회차</th>
+                  <th className="px-5 py-3 font-semibold">일자</th>
                   <th className="px-5 py-3 font-semibold">주제</th>
                   <th className="px-5 py-3 font-semibold">모듈</th>
                   <th className="px-5 py-3 font-semibold">시간</th>
@@ -76,6 +78,7 @@ export default function Overview() {
                 {sessions.map((s, i) => (
                   <tr key={s.no} className={i % 2 ? 'bg-surface' : 'bg-white'}>
                     <td className="whitespace-nowrap px-5 py-4 font-bold text-navy">{s.no}회차</td>
+                    <td className="whitespace-nowrap px-5 py-4 font-semibold text-royal">{s.date}</td>
                     <td className="px-5 py-4 text-ink-muted">{s.topicNo === 1 ? '①' : '②'} {s.topicLabel}</td>
                     <td className="px-5 py-4 text-ink-strong">{s.module}</td>
                     <td className="whitespace-nowrap px-5 py-4 font-semibold text-royal">{s.hours}</td>

@@ -1,5 +1,5 @@
 // 삼육대학교 2026 가을학기 특강 — 생성형 AI 실무 역량 강화 과정
-// 제안서 기반 커리큘럼 데이터 (단일 출처)
+// 제안서 내용 기준 + 확정 일자(주제① 9/14·15, 주제② 9/21·22) 반영 (단일 출처)
 
 export interface TimeSlot {
   time: string      // "18:30–19:10"
@@ -15,6 +15,7 @@ export interface Session {
   topicLabel: string
   module: string
   title: string
+  date: string      // "9/14"
   hours: string
   goal: string
   slots: TimeSlot[]
@@ -31,6 +32,7 @@ export const course = {
   totalHours: '14시간',
   structure: '4회차 × 3.5시간',
   schedule: '평일 저녁 18:30–22:00',
+  dates: '9/14·15, 9/21·22',
   audience: '삼육대학교 재학생 (학부생)',
   goals: [
     '반복 업무를 [입력–처리–출력]으로 분해하고 n8n으로 자동화 워크플로우를 직접 구현한다.',
@@ -49,6 +51,7 @@ export const topics = [
   {
     no: 1 as const,
     title: 'AI 에이전트 & n8n 기반 업무 자동화',
+    dates: '9/14·15',
     hours: '7시간 / 2회차',
     summary:
       '반복 업무를 자동화로 분해하고, n8n으로 워크플로우를 직접 구현한다. 자연어만으로 웹앱을 만들어 배포하고 문서 자동화 파이프라인까지 완성한다.',
@@ -59,6 +62,7 @@ export const topics = [
   {
     no: 2 as const,
     title: 'AI 멀티미디어 & 강의 콘텐츠 제작',
+    dates: '9/21·22',
     hours: '7시간 / 2회차',
     summary:
       '목적에 맞는 이미지·디자인·영상·음성 콘텐츠를 생성형 AI로 제작하고, 텍스트 한 줄에서 완성 콘텐츠로 이어지는 원스톱 파이프라인과 저작권 검수를 익힌다.',
@@ -75,6 +79,7 @@ export const sessions: Session[] = [
     topicLabel: 'AI 에이전트 & n8n 자동화',
     module: '자동화 설계 + n8n 입문',
     title: '자동화 설계 기초 + n8n 입문',
+    date: '9/14',
     hours: '3.5H',
     goal: '반복 작업을 [입력–처리–출력]으로 분해하고, n8n으로 첫 워크플로우를 직접 실행해 본다.',
     slots: [
@@ -114,6 +119,7 @@ export const sessions: Session[] = [
     topicLabel: 'AI 에이전트 & n8n 자동화',
     module: '자연어 웹앱 + 문서 자동화',
     title: '자연어 기반 웹앱 + 문서 자동화 실전',
+    date: '9/15',
     hours: '3.5H',
     goal: '코드를 직접 짜지 않고 자연어로 웹앱을 만들고 배포하며, 문서 생성 자동화 파이프라인을 구현한다.',
     slots: [
@@ -153,6 +159,7 @@ export const sessions: Session[] = [
     topicLabel: 'AI 멀티미디어 & 콘텐츠 제작',
     module: 'AI 이미지 & 디자인',
     title: 'AI 이미지 및 디자인',
+    date: '9/21',
     hours: '3.5H',
     goal: '목적에 맞는 고품질 이미지를 생성하고, 포스터·썸네일을 빠르게 디자인한다.',
     slots: [
@@ -187,6 +194,7 @@ export const sessions: Session[] = [
     topicLabel: 'AI 멀티미디어 & 콘텐츠 제작',
     module: 'AI 영상·음성 + 원스톱 파이프라인',
     title: 'AI 영상·음성 + 원스톱 콘텐츠 파이프라인',
+    date: '9/22',
     hours: '3.5H',
     goal: 'AI로 영상·음성을 제작하고, 텍스트 한 줄에서 콘텐츠로 이어지는 통합 흐름을 경험하며 저작권을 점검한다.',
     slots: [

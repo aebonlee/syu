@@ -8,6 +8,7 @@ import Curriculum from './pages/Curriculum'
 import SessionDetail from './pages/SessionDetail'
 import Outcomes from './pages/Outcomes'
 import Tools from './pages/Tools'
+import Materials from './pages/Materials'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/overview" element={<Overview />} />
           <Route path="/curriculum" element={<Curriculum />} />
           <Route path="/curriculum/:no" element={<SessionDetail />} />
+          <Route path="/materials/:slug" element={<Materials />} />
           <Route path="/outcomes" element={<Outcomes />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="*" element={<Home />} />

@@ -88,6 +88,7 @@ export default function SessionDetail() {
             <div className="card">
               <span className="text-xs font-bold uppercase tracking-wider text-ink-disabled">회차 정보</span>
               <dl className="mt-3 space-y-2 text-sm">
+                <div className="flex justify-between"><dt className="text-ink-faded">교육 일자</dt><dd className="font-semibold text-royal">{session.date}</dd></div>
                 <div className="flex justify-between"><dt className="text-ink-faded">교육시간</dt><dd className="font-semibold text-ink-strong">{session.hours}</dd></div>
                 <div className="flex justify-between"><dt className="text-ink-faded">시간대</dt><dd className="font-semibold text-ink-strong">18:30–22:00</dd></div>
                 <div className="flex justify-between"><dt className="text-ink-faded">방식</dt><dd className="font-semibold text-ink-strong">비대면 VOD</dd></div>

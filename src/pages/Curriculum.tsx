@@ -40,7 +40,7 @@ export default function Curriculum() {
                     className="group flex flex-col rounded-card border border-hairline bg-white p-6 shadow-card transition-transform hover:-translate-y-1"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-royal">{s.no}회차</span>
+                      <span className="text-sm font-bold text-royal">{s.no}회차 · {s.date}</span>
                       <span className="rounded-full bg-surface px-3 py-1 text-xs font-semibold text-ink-faded">
                         {s.hours}
                       </span>
