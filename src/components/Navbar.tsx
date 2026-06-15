@@ -3,38 +3,46 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import LoginModal from './LoginModal'
 
-// 상위 메뉴 + 하위 메뉴 — 메가메뉴(전체 폭 영역)로 표시
+// 상위 메뉴마다 자기만의 전체 폭 드롭다운(메가패널)을 가짐
 const MENUS = [
   {
     label: '과정 소개',
     to: '/overview',
+    kicker: 'About',
+    desc: '과정 개요부터 산출물·학습 도구까지 한눈에',
     children: [
-      { to: '/overview', label: '과정 개요', desc: '개요·교육 목표·구조' },
+      { to: '/overview', label: '과정 개요', desc: '개요·교육 목표·전체 구조' },
       { to: '/curriculum', label: '커리큘럼', desc: '회차별 세부 시간표' },
-      { to: '/outcomes', label: '산출물·기대효과', desc: '회차별 산출물·효과' },
+      { to: '/outcomes', label: '산출물·기대효과', desc: '회차별 산출물·기대 효과' },
       { to: '/tools', label: '학습 도구', desc: 'n8n·Lovable·HeyGen 등' },
     ],
+    cta: { to: '/curriculum', kicker: 'View', title: '전체 커리큘럼\n한눈에 보기', link: '커리큘럼 보기' },
   },
   {
     label: '과정별 학습자료',
-    to: '/materials/automation',
+    to: '/learn/1',
+    kicker: 'Materials',
+    desc: '1~4회차 회차별 상세 학습 콘텐츠',
     children: [
-      { to: '/materials/automation', label: 'AI 에이전트 & n8n 기반 업무 자동화', desc: '주제 ① · 9/14·15 · 1~2회차 상세 자료' },
-      { to: '/materials/multimedia', label: 'AI 멀티미디어 & 강의 콘텐츠 제작', desc: '주제 ② · 9/21·22 · 3~4회차 상세 자료' },
+      { to: '/learn/1', label: '1회차 · 자동화 설계 + n8n 입문', desc: '주제 ① · 9/14' },
+      { to: '/learn/2', label: '2회차 · 자연어 웹앱 + 문서 자동화', desc: '주제 ① · 9/15' },
+      { to: '/learn/3', label: '3회차 · AI 이미지 및 디자인', desc: '주제 ② · 9/21' },
+      { to: '/learn/4', label: '4회차 · AI 영상·음성 + 파이프라인', desc: '주제 ② · 9/22' },
     ],
+    cta: { to: '/learn/1', kicker: 'Start', title: '1회차부터\n바로 학습 시작', link: '1회차 학습 보기' },
   },
 ]
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false)            // mobile menu
+  const [open, setOpen] = useState(false)               // mobile menu
   const [mobileSub, setMobileSub] = useState<number | null>(0)
-  const [mega, setMega] = useState(false)            // desktop full-width megamenu
+  const [activeMenu, setActiveMenu] = useState<number | null>(null) // 호버 중인 상위 메뉴
   const [loginOpen, setLoginOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const { pathname } = useLocation()
   const { isLoggedIn, profile, signOut } = useAuth()
 
-  useEffect(() => { setOpen(false); setMega(false) }, [pathname])
+  useEffect(() => { setOpen(false); setActiveMenu(null) }, [pathname])
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
     onScroll()
@@ -44,6 +52,8 @@ export default function Navbar() {
 
   const isSectionActive = (m: typeof MENUS[number]) =>
     m.children.some((c) => pathname.startsWith(c.to.split('/').slice(0, 2).join('/')))
+
+  const panel = activeMenu !== null ? MENUS[activeMenu] : null
 
   return (
     <header className="sticky top-0 z-50">
@@ -74,9 +84,9 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ───── 메인 네비 + 메가메뉴 (전체 폭 영역) ───── */}
-      <div className="relative" onMouseLeave={() => setMega(false)}>
-        <div className={`border-b border-hairline bg-white transition-shadow ${scrolled || mega ? 'shadow-card' : ''}`}>
+      {/* ───── 메인 네비 + 메뉴별 전체 폭 드롭다운 ───── */}
+      <div className="relative" onMouseLeave={() => setActiveMenu(null)}>
+        <div className={`border-b border-hairline bg-white transition-shadow ${scrolled || panel ? 'shadow-card' : ''}`}>
           <div className="container-page flex h-[72px] items-center justify-between">
             {/* logo */}
             <Link to="/" className="flex items-center gap-3">
@@ -91,14 +101,15 @@ export default function Navbar() {
               </span>
             </Link>
 
-            {/* top-level labels (hover → 전체 폭 메가메뉴) */}
-            <nav className="hidden h-full items-stretch gap-10 lg:flex" onMouseEnter={() => setMega(true)}>
-              {MENUS.map((m) => (
+            {/* top-level labels — 각 메뉴 호버 시 자기 패널 오픈 */}
+            <nav className="hidden h-full items-stretch gap-10 lg:flex">
+              {MENUS.map((m, i) => (
                 <Link
                   key={m.label}
                   to={m.to}
+                  onMouseEnter={() => setActiveMenu(i)}
                   className={`flex items-center text-[16px] font-semibold transition-colors ${
-                    isSectionActive(m) || mega ? 'text-navy' : 'text-ink-muted hover:text-navy'
+                    isSectionActive(m) || activeMenu === i ? 'text-navy' : 'text-ink-muted hover:text-navy'
                   }`}
                 >
                   {m.label}
@@ -129,65 +140,59 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* 전체 폭 메가메뉴 패널 */}
+        {/* 선택된 메뉴의 전체 폭 드롭다운 패널 */}
         <div
-          onMouseEnter={() => setMega(true)}
+          onMouseEnter={() => activeMenu !== null && setActiveMenu(activeMenu)}
           className={`absolute inset-x-0 top-full hidden border-b border-hairline bg-white shadow-card transition-all duration-200 lg:block ${
-            mega ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0'
+            panel ? 'visible translate-y-0 opacity-100' : 'invisible -translate-y-2 opacity-0'
           }`}
         >
-          <div className="container-page grid grid-cols-[200px_1fr_1fr_240px] gap-8 py-9">
-            {/* left label */}
-            <div className="border-r border-hairline pr-6">
-              <div className="text-xs font-bold uppercase tracking-[0.2em] text-royal">Curriculum</div>
-              <h3 className="mt-2 text-xl font-extrabold leading-snug text-navy">
-                생성형 AI<br />실무 역량 강화
-              </h3>
-              <p className="mt-3 text-xs leading-relaxed text-ink-disabled">
-                4회차 · 14시간<br />비대면 VOD 특강
-              </p>
-            </div>
-
-            {/* menu group columns */}
-            {MENUS.map((m) => (
-              <div key={m.label}>
-                <Link to={m.to} className="group inline-flex items-center gap-1.5 text-[15px] font-bold text-navy">
-                  {m.label}
-                  <span className="text-royal transition-transform group-hover:translate-x-0.5" aria-hidden>→</span>
-                </Link>
-                <ul className="mt-3 space-y-1">
-                  {m.children.map((c) => (
-                    <li key={c.to}>
-                      <NavLink
-                        to={c.to}
-                        className={({ isActive }) =>
-                          `block rounded-lg px-3 py-2 transition-colors ${isActive ? 'bg-royal-50' : 'hover:bg-surface'}`
-                        }
-                      >
-                        {({ isActive }) => (
-                          <>
-                            <span className={`block text-[13.5px] font-semibold ${isActive ? 'text-royal' : 'text-ink-strong'}`}>{c.label}</span>
-                            <span className="block text-[11px] text-ink-disabled">{c.desc}</span>
-                          </>
-                        )}
-                      </NavLink>
-                    </li>
-                  ))}
-                </ul>
+          {panel && (
+            <div className="container-page grid grid-cols-[220px_1fr_240px] gap-8 py-9">
+              {/* left label */}
+              <div className="border-r border-hairline pr-6">
+                <div className="text-xs font-bold uppercase tracking-[0.2em] text-royal">{panel.kicker}</div>
+                <h3 className="mt-2 text-xl font-extrabold leading-snug text-navy">{panel.label}</h3>
+                <p className="mt-3 text-xs leading-relaxed text-ink-disabled">{panel.desc}</p>
               </div>
-            ))}
 
-            {/* right CTA card */}
-            <div className="flex flex-col justify-between rounded-card bg-hero-gradient p-5 text-white">
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-wider text-white/70">Start</div>
-                <p className="mt-2 text-[15px] font-bold leading-snug">1회차부터<br />바로 학습 시작</p>
+              {/* children grid (2×2) */}
+              <div className="grid grid-cols-2 gap-2">
+                {panel.children.map((c) => (
+                  <NavLink
+                    key={c.to}
+                    to={c.to}
+                    className={({ isActive }) =>
+                      `group flex flex-col justify-center rounded-card border px-4 py-3 transition-colors ${
+                        isActive ? 'border-royal bg-royal-50' : 'border-hairline hover:border-royal hover:bg-surface'
+                      }`
+                    }
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <span className={`text-[14px] font-bold ${isActive ? 'text-royal' : 'text-ink-strong group-hover:text-navy'}`}>{c.label}</span>
+                        <span className="mt-0.5 text-[11px] text-ink-disabled">{c.desc}</span>
+                      </>
+                    )}
+                  </NavLink>
+                ))}
               </div>
-              <Link to="/curriculum/1" className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-white">
-                커리큘럼 보기 <span aria-hidden>↗</span>
+
+              {/* right CTA card */}
+              <Link
+                to={panel.cta.to}
+                className="flex flex-col justify-between rounded-card bg-hero-gradient p-5 text-white transition-transform hover:-translate-y-0.5"
+              >
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-wider text-white/70">{panel.cta.kicker}</div>
+                  <p className="mt-2 whitespace-pre-line text-[15px] font-bold leading-snug">{panel.cta.title}</p>
+                </div>
+                <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-white">
+                  {panel.cta.link} <span aria-hidden>↗</span>
+                </span>
               </Link>
             </div>
-          </div>
+          )}
         </div>
 
         {/* mobile menu */}
@@ -212,7 +217,7 @@ export default function Navbar() {
                           key={c.to}
                           to={c.to}
                           className={({ isActive }) =>
-                            `block rounded-lg px-3 py-2.5 text-[15px] font-semibold ${isActive ? 'bg-royal-50 text-royal' : 'text-ink-muted'}`
+                            `block rounded-lg px-3 py-2.5 text-[14px] font-semibold ${isActive ? 'bg-royal-50 text-royal' : 'text-ink-muted'}`
                           }
                         >
                           {c.label}

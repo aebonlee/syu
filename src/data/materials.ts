@@ -444,3 +444,19 @@ export const materialTopics = materials.map((m) => ({
   title: m.title,
   hours: m.hours,
 }))
+
+// 회차별(1~4회차) 평탄화 — /learn/:no 페이지에서 사용
+export interface LearnSession extends MaterialSession {
+  topicNo: 1 | 2
+  topicTitle: string
+  slug: string
+}
+
+export const learnSessions: LearnSession[] = materials.flatMap((t) =>
+  t.sessions.map((s) => ({
+    ...s,
+    topicNo: t.topicNo,
+    topicTitle: t.title,
+    slug: t.slug,
+  })),
+).sort((a, b) => a.no - b.no)

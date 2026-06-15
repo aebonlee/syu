@@ -31,12 +31,10 @@ export default function Footer() {
         <div>
           <h4 className="text-sm font-bold text-white">과정별 학습자료</h4>
           <ul className="mt-4 space-y-2 text-sm">
-            <li><Link to="/materials/automation" className="hover:text-white">AI 에이전트 &amp; n8n 자동화</Link></li>
-            <li><Link to="/materials/multimedia" className="hover:text-white">AI 멀티미디어 &amp; 콘텐츠 제작</Link></li>
-          </ul>
-          <ul className="mt-4 space-y-1 text-xs text-white/45">
-            <li>총 {course.totalHours} · {course.structure}</li>
-            <li>{course.schedule}</li>
+            <li><Link to="/learn/1" className="hover:text-white">1회차 · 자동화 설계 + n8n 입문</Link></li>
+            <li><Link to="/learn/2" className="hover:text-white">2회차 · 자연어 웹앱 + 문서 자동화</Link></li>
+            <li><Link to="/learn/3" className="hover:text-white">3회차 · AI 이미지 및 디자인</Link></li>
+            <li><Link to="/learn/4" className="hover:text-white">4회차 · AI 영상·음성 + 파이프라인</Link></li>
           </ul>
         </div>
       </div>

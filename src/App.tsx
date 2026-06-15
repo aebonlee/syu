@@ -9,6 +9,7 @@ import SessionDetail from './pages/SessionDetail'
 import Outcomes from './pages/Outcomes'
 import Tools from './pages/Tools'
 import Materials from './pages/Materials'
+import SessionLearn from './pages/SessionLearn'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/curriculum" element={<Curriculum />} />
           <Route path="/curriculum/:no" element={<SessionDetail />} />
           <Route path="/materials/:slug" element={<Materials />} />
+          <Route path="/learn/:no" element={<SessionLearn />} />
           <Route path="/outcomes" element={<Outcomes />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="*" element={<Home />} />
