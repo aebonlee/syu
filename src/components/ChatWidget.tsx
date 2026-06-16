@@ -22,7 +22,6 @@ const SUGGESTIONS = [
 
 export default function ChatWidget() {
   const [open, setOpen] = useState(false)
-  const [hint, setHint] = useState(false) // 풍선도움말
   const [provider, setProvider] = useState<Provider>('solar')
   const [messages, setMessages] = useState<Msg[]>([WELCOME])
   const [input, setInput] = useState('')
@@ -33,16 +32,7 @@ export default function ChatWidget() {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
   }, [messages, loading, open])
 
-  // 로드 후 잠시 뒤 풍선도움말 노출
-  useEffect(() => {
-    const t = setTimeout(() => setHint(true), 1200)
-    return () => clearTimeout(t)
-  }, [])
-
-  const openChat = () => {
-    setOpen(true)
-    setHint(false)
-  }
+  const openChat = () => setOpen(true)
 
   const send = async (text: string) => {
     const content = text.trim()
@@ -77,45 +67,38 @@ export default function ChatWidget() {
 
   return (
     <>
-      {/* ───── 풍선도움말 (화살표가 챗봇 버튼을 가리킴) ───── */}
-      {!open && hint && (
-        <div className="fixed bottom-32 right-6 z-[91] w-[244px] animate-fade-up">
-          <div className="relative rounded-2xl bg-white p-4 shadow-hero ring-2 ring-royal/25">
-            <button
-              onClick={() => setHint(false)}
-              aria-label="도움말 닫기"
-              className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-navy text-white shadow ring-2 ring-white"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden>
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" />
-              </svg>
-            </button>
-            <div className="flex items-start gap-2.5">
-              <span className="text-2xl leading-none">💬</span>
-              <div>
-                <p className="text-[14px] font-extrabold text-navy">AI 학습 도우미</p>
-                <p className="mt-0.5 text-[12.5px] leading-snug text-ink-muted">
-                  특강 일정·n8n·AI 영상 등<br />궁금한 건 여기서 물어보세요!
-                </p>
-                <button
-                  onClick={openChat}
-                  className="mt-2 inline-flex items-center gap-1 rounded-lg bg-royal px-3 py-1.5 text-[12px] font-bold text-white transition-colors hover:bg-royal-600"
-                >
-                  채팅 시작 <span aria-hidden>↗</span>
-                </button>
+      {/* ───── 플로팅 클러스터 (풍선도움말 + 버튼이 함께 둥둥) ───── */}
+      <div className="fixed bottom-6 right-6 z-[90] animate-float-soft">
+        {/* 풍선도움말 — 항상 노출, 화살표가 아래 버튼을 가리킴 */}
+        {!open && (
+          <div className="absolute bottom-[88px] right-0 w-[244px]">
+            <div className="relative rounded-2xl bg-white p-4 shadow-hero ring-2 ring-royal/25">
+              <div className="flex items-start gap-2.5">
+                <span className="text-2xl leading-none">💬</span>
+                <div>
+                  <p className="text-[14px] font-extrabold text-navy">AI 학습 도우미</p>
+                  <p className="mt-0.5 text-[12.5px] leading-snug text-ink-muted">
+                    특강 일정·n8n·AI 영상 등<br />궁금한 건 여기서 물어보세요!
+                  </p>
+                  <button
+                    onClick={openChat}
+                    className="mt-2 inline-flex items-center gap-1 rounded-lg bg-royal px-3 py-1.5 text-[12px] font-bold text-white transition-colors hover:bg-royal-600"
+                  >
+                    채팅 시작 <span aria-hidden>↗</span>
+                  </button>
+                </div>
               </div>
+              {/* 아래쪽 화살표 — 챗봇 버튼을 가리킴 (테두리 삼각형 + 흰 삼각형) */}
+              <div className="absolute -bottom-[9px] right-9 h-0 w-0 border-x-[9px] border-t-[9px] border-x-transparent border-t-royal/25" />
+              <div className="absolute -bottom-[6px] right-9 h-0 w-0 border-x-[9px] border-t-[9px] border-x-transparent border-t-white" />
             </div>
-            {/* 아래쪽 화살표 — 챗봇 버튼을 가리킴 (테두리 삼각형 + 흰 삼각형) */}
-            <div className="absolute -bottom-[9px] right-9 h-0 w-0 border-x-[9px] border-t-[9px] border-x-transparent border-t-royal/25" />
-            <div className="absolute -bottom-[6px] right-9 h-0 w-0 border-x-[9px] border-t-[9px] border-x-transparent border-t-white" />
           </div>
-        </div>
-      )}
+        )}
 
-      {/* ───── 플로팅 버튼 (1.2배 확대 + 강조 컬러) ───── */}
-      <div className="fixed bottom-6 right-6 z-[90]">
         {/* 주의를 끄는 펄스 링 */}
         {!open && <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-royal/40" />}
+
+        {/* 플로팅 버튼 (1.2배 확대 + 강조 컬러) */}
         <button
           onClick={() => (open ? setOpen(false) : openChat())}
           aria-label="AI 학습 도우미 채팅"

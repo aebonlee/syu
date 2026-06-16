@@ -59,11 +59,16 @@ export default {
           '0%, 100%': { transform: 'translateY(0) rotate(3deg)' },
           '50%': { transform: 'translateY(-22px) rotate(3deg)' },
         },
+        'float-soft': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
       },
       animation: {
         'fade-up': 'fade-up 0.6s cubic-bezier(0.4,0,0.2,1) both',
         'float-a': 'float-a 6s ease-in-out infinite',
         'float-b': 'float-b 7.5s ease-in-out infinite 0.8s',
+        'float-soft': 'float-soft 4s ease-in-out infinite',
       },
     },
   },
