@@ -10,6 +10,7 @@ import Outcomes from './pages/Outcomes'
 import Tools from './pages/Tools'
 import Materials from './pages/Materials'
 import SessionLearn from './pages/SessionLearn'
+import ChatWidget from './components/ChatWidget'
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -38,6 +39,7 @@ export default function App() {
         </Routes>
       </main>
       <Footer />
+      <ChatWidget />
     </div>
   )
 }
