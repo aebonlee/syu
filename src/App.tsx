@@ -31,7 +31,7 @@ export default function App() {
           <Route path="/curriculum" element={<Curriculum />} />
           <Route path="/curriculum/:no" element={<SessionDetail />} />
           <Route path="/materials/:slug" element={<Materials />} />
-          <Route path="/learn/:no" element={<SessionLearn />} />
+          <Route path="/learn/:slug/:n" element={<SessionLearn />} />
           <Route path="/outcomes" element={<Outcomes />} />
           <Route path="/tools" element={<Tools />} />
           <Route path="*" element={<Home />} />

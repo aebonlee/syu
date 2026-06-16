@@ -4,7 +4,13 @@ import { useAuth } from '../contexts/AuthContext'
 import LoginModal from './LoginModal'
 
 // 상위 메뉴마다 자기만의 전체 폭 드롭다운(메가패널)을 가짐
-const MENUS = [
+type MenuChild = { to: string; label: string; desc: string }
+type MenuGroup = { title: string; items: MenuChild[] }
+type MenuCta = { to: string; kicker: string; title: string; link: string }
+type MenuBase = { label: string; to: string; kicker: string; desc: string; cta: MenuCta }
+type Menu = (MenuBase & { children: MenuChild[] }) | (MenuBase & { groups: MenuGroup[] })
+
+const MENUS: Menu[] = [
   {
     label: '과정 소개',
     to: '/overview',
@@ -20,16 +26,26 @@ const MENUS = [
   },
   {
     label: '과정별 학습자료',
-    to: '/learn/1',
+    to: '/learn/automation/1',
     kicker: 'Materials',
-    desc: '1~4회차 회차별 상세 학습 콘텐츠',
-    children: [
-      { to: '/learn/1', label: '1회차 · 자동화 설계 + n8n 입문', desc: '주제 ① · 9/14' },
-      { to: '/learn/2', label: '2회차 · 자연어 웹앱 + 문서 자동화', desc: '주제 ① · 9/15' },
-      { to: '/learn/3', label: '3회차 · AI 이미지 및 디자인', desc: '주제 ② · 9/21' },
-      { to: '/learn/4', label: '4회차 · AI 영상·음성 + 파이프라인', desc: '주제 ② · 9/22' },
+    desc: '2개 과정 · 과정별 1~2회차 상세 학습 콘텐츠',
+    groups: [
+      {
+        title: '주제 ① AI 에이전트 & n8n 자동화',
+        items: [
+          { to: '/learn/automation/1', label: '1회차 · 자동화 설계 + n8n 입문', desc: '9/14' },
+          { to: '/learn/automation/2', label: '2회차 · 자연어 웹앱 + 문서 자동화', desc: '9/15' },
+        ],
+      },
+      {
+        title: '주제 ② AI 멀티미디어 & 강의 콘텐츠 제작',
+        items: [
+          { to: '/learn/multimedia/1', label: '1회차 · AI 이미지 및 디자인', desc: '9/21' },
+          { to: '/learn/multimedia/2', label: '2회차 · AI 영상·음성 + 파이프라인', desc: '9/22' },
+        ],
+      },
     ],
-    cta: { to: '/learn/1', kicker: 'Start', title: '1회차부터\n바로 학습 시작', link: '1회차 학습 보기' },
+    cta: { to: '/learn/automation/1', kicker: 'Start', title: '주제 ① 1회차부터\n바로 학습 시작', link: '학습 시작' },
   },
 ]
 
@@ -50,8 +66,12 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // 메뉴의 모든 하위 링크 (children 또는 groups 평탄화)
+  const menuLinks = (m: typeof MENUS[number]) =>
+    'groups' in m ? m.groups.flatMap((g) => g.items) : m.children
+
   const isSectionActive = (m: typeof MENUS[number]) =>
-    m.children.some((c) => pathname.startsWith(c.to.split('/').slice(0, 2).join('/')))
+    menuLinks(m).some((c) => pathname.startsWith(c.to.split('/').slice(0, 2).join('/')))
 
   const panel = activeMenu !== null ? MENUS[activeMenu] : null
 
@@ -156,19 +176,43 @@ export default function Navbar() {
                 <p className="mt-3 text-xs leading-relaxed text-ink-disabled">{panel.desc}</p>
               </div>
 
-              {/* children grid (2×2) — 박스 없이 텍스트 링크 */}
-              <div className="grid grid-cols-2 gap-x-10 gap-y-1">
-                {panel.children.map((c) => (
-                  <NavLink key={c.to} to={c.to} className="group flex flex-col py-2.5">
-                    {({ isActive }) => (
-                      <>
-                        <span className={`text-[14px] font-bold transition-colors ${isActive ? 'text-royal' : 'text-ink-strong group-hover:text-royal'}`}>{c.label}</span>
-                        <span className="mt-0.5 text-[11px] text-ink-disabled">{c.desc}</span>
-                      </>
-                    )}
-                  </NavLink>
-                ))}
-              </div>
+              {/* 중앙 영역 — 과정별 학습자료는 과정별 그룹(주제①/②), 그 외는 평면 링크 */}
+              {'groups' in panel ? (
+                <div className="grid grid-cols-2 gap-x-10">
+                  {panel.groups.map((g) => (
+                    <div key={g.title}>
+                      <div className="mb-3 border-b border-hairline pb-2 text-[12px] font-bold text-navy">{g.title}</div>
+                      <ul>
+                        {g.items.map((c) => (
+                          <li key={c.to}>
+                            <NavLink to={c.to} className="group flex items-baseline gap-1.5 py-2">
+                              {({ isActive }) => (
+                                <>
+                                  <span className={`text-[13.5px] font-semibold transition-colors ${isActive ? 'text-royal' : 'text-ink-strong group-hover:text-royal'}`}>{c.label}</span>
+                                  <span className="text-[11px] text-ink-disabled">· {c.desc}</span>
+                                </>
+                              )}
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 gap-x-10 gap-y-1">
+                  {panel.children.map((c) => (
+                    <NavLink key={c.to} to={c.to} className="group flex flex-col py-2.5">
+                      {({ isActive }) => (
+                        <>
+                          <span className={`text-[14px] font-bold transition-colors ${isActive ? 'text-royal' : 'text-ink-strong group-hover:text-royal'}`}>{c.label}</span>
+                          <span className="mt-0.5 text-[11px] text-ink-disabled">{c.desc}</span>
+                        </>
+                      )}
+                    </NavLink>
+                  ))}
+                </div>
+              )}
 
               {/* right CTA card */}
               <Link
@@ -204,17 +248,34 @@ export default function Navbar() {
                   </button>
                   {mobileSub === i && (
                     <div className="ml-2 border-l border-hairline pl-3">
-                      {m.children.map((c) => (
-                        <NavLink
-                          key={c.to}
-                          to={c.to}
-                          className={({ isActive }) =>
-                            `block rounded-lg px-3 py-2.5 text-[14px] font-semibold ${isActive ? 'bg-royal-50 text-royal' : 'text-ink-muted'}`
-                          }
-                        >
-                          {c.label}
-                        </NavLink>
-                      ))}
+                      {'groups' in m
+                        ? m.groups.map((g) => (
+                            <div key={g.title} className="py-1">
+                              <div className="px-3 py-1.5 text-[12px] font-bold text-navy">{g.title}</div>
+                              {g.items.map((c) => (
+                                <NavLink
+                                  key={c.to}
+                                  to={c.to}
+                                  className={({ isActive }) =>
+                                    `block rounded-lg px-3 py-2 text-[13.5px] font-semibold ${isActive ? 'bg-royal-50 text-royal' : 'text-ink-muted'}`
+                                  }
+                                >
+                                  {c.label}
+                                </NavLink>
+                              ))}
+                            </div>
+                          ))
+                        : m.children.map((c) => (
+                            <NavLink
+                              key={c.to}
+                              to={c.to}
+                              className={({ isActive }) =>
+                                `block rounded-lg px-3 py-2.5 text-[14px] font-semibold ${isActive ? 'bg-royal-50 text-royal' : 'text-ink-muted'}`
+                              }
+                            >
+                              {c.label}
+                            </NavLink>
+                          ))}
                     </div>
                   )}
                 </div>

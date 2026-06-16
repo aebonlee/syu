@@ -1,39 +1,62 @@
 import { useParams, Navigate, Link } from 'react-router-dom'
 import PageHero from '../components/PageHero'
-import { learnSessions } from '../data/materials'
+import { materials } from '../data/materials'
 
 export default function SessionLearn() {
-  const { no } = useParams()
-  const session = learnSessions.find((s) => String(s.no) === no)
+  const { slug, n } = useParams()
+  const topic = materials.find((t) => t.slug === slug)
+  if (!topic) return <Navigate to="/learn/automation/1" replace />
 
-  if (!session) return <Navigate to="/learn/1" replace />
+  const idx = Number(n) - 1
+  const session = topic.sessions[idx]
+  if (!session) return <Navigate to={`/learn/${topic.slug}/1`} replace />
 
-  const idx = learnSessions.indexOf(session)
-  const prev = learnSessions[idx - 1]
-  const next = learnSessions[idx + 1]
+  const localNo = idx + 1
+  const prev = topic.sessions[idx - 1]
+  const next = topic.sessions[idx + 1]
+  const otherTopic = materials.find((t) => t.slug !== topic.slug)!
 
   return (
     <>
       <PageHero
-        title={`${session.no}회차 · ${session.title}`}
-        titleEn={`SESSION ${String(session.no).padStart(2, '0')} · LEARNING`}
-        crumbs={[{ label: '과정별 학습자료', to: '/learn/1' }, { label: `${session.no}회차` }]}
+        title={`${localNo}회차 · ${session.title}`}
+        titleEn={`${topic.subtitle.toUpperCase()} · SESSION ${localNo}`}
+        crumbs={[
+          { label: '과정별 학습자료', to: `/learn/${topic.slug}/1` },
+          { label: topic.title, to: `/learn/${topic.slug}/1` },
+          { label: `${localNo}회차` },
+        ]}
       />
 
       <div className="container-page py-14 md:py-16">
-        {/* session switch (1~4회차) */}
-        <div className="mb-8 flex flex-wrap gap-2">
-          {learnSessions.map((s) => (
+        {/* 과정(주제) 전환 */}
+        <div className="mb-5 flex flex-wrap gap-2">
+          {materials.map((t) => (
             <Link
-              key={s.no}
-              to={`/learn/${s.no}`}
+              key={t.slug}
+              to={`/learn/${t.slug}/1`}
               className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors ${
-                s.no === session.no
+                t.slug === topic.slug
                   ? 'border-navy bg-navy text-white'
                   : 'border-hairline bg-white text-ink-muted hover:border-royal hover:text-royal'
               }`}
             >
-              {s.no}회차 · {s.date}
+              {t.topicNo === 1 ? '주제 ①' : '주제 ②'} {t.title}
+            </Link>
+          ))}
+        </div>
+
+        {/* 회차 전환 (해당 과정의 1~2회차) */}
+        <div className="mb-8 flex flex-wrap gap-2">
+          {topic.sessions.map((s, i) => (
+            <Link
+              key={s.no}
+              to={`/learn/${topic.slug}/${i + 1}`}
+              className={`rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
+                i === idx ? 'bg-royal-50 text-royal' : 'bg-surface text-ink-faded hover:text-navy'
+              }`}
+            >
+              {i + 1}회차 · {s.date}
             </Link>
           ))}
         </div>
@@ -41,7 +64,7 @@ export default function SessionLearn() {
         {/* meta + goal */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-navy px-3 py-1 text-xs font-semibold text-white">
-            주제 {session.topicNo} · {session.topicTitle}
+            {topic.topicNo === 1 ? '주제 ①' : '주제 ②'} · {topic.title}
           </span>
           <span className="rounded-full bg-royal-50 px-3 py-1 text-xs font-semibold text-royal">
             {session.date} · 18:30–22:00 (3.5H)
@@ -49,7 +72,7 @@ export default function SessionLearn() {
         </div>
 
         <div className="mt-5 rounded-card border-l-4 border-royal bg-surface p-5">
-          <span className="text-xs font-bold uppercase tracking-wider text-royal">{session.no}회차 학습 목표</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-royal">{localNo}회차 학습 목표</span>
           <p className="mt-1 leading-relaxed text-ink-strong">{session.goal}</p>
         </div>
 
@@ -118,23 +141,25 @@ export default function SessionLearn() {
           ))}
         </div>
 
-        {/* prev / next */}
+        {/* prev / next (과정 내 회차 → 끝나면 다른 과정) */}
         <nav className="mt-14 grid gap-4 border-t border-hairline pt-8 sm:grid-cols-2">
           {prev ? (
-            <Link to={`/learn/${prev.no}`} className="group rounded-card border border-hairline p-5 transition-colors hover:border-royal">
+            <Link to={`/learn/${topic.slug}/${idx}`} className="group rounded-card border border-hairline p-5 transition-colors hover:border-royal">
               <span className="text-xs font-semibold text-ink-disabled">← 이전 회차</span>
-              <div className="mt-1 font-bold text-ink-strong group-hover:text-royal">{prev.no}회차 · {prev.title}</div>
+              <div className="mt-1 font-bold text-ink-strong group-hover:text-royal">{idx}회차 · {prev.title}</div>
             </Link>
           ) : <span />}
           {next ? (
-            <Link to={`/learn/${next.no}`} className="group rounded-card border border-hairline p-5 text-right transition-colors hover:border-royal">
+            <Link to={`/learn/${topic.slug}/${idx + 2}`} className="group rounded-card border border-hairline p-5 text-right transition-colors hover:border-royal">
               <span className="text-xs font-semibold text-ink-disabled">다음 회차 →</span>
-              <div className="mt-1 font-bold text-ink-strong group-hover:text-royal">{next.no}회차 · {next.title}</div>
+              <div className="mt-1 font-bold text-ink-strong group-hover:text-royal">{idx + 2}회차 · {next.title}</div>
             </Link>
           ) : (
-            <Link to="/outcomes" className="group rounded-card border border-hairline p-5 text-right transition-colors hover:border-royal">
-              <span className="text-xs font-semibold text-ink-disabled">과정 마무리 →</span>
-              <div className="mt-1 font-bold text-ink-strong group-hover:text-royal">산출물 · 기대효과</div>
+            <Link to={`/learn/${otherTopic.slug}/1`} className="group rounded-card border border-hairline p-5 text-right transition-colors hover:border-royal">
+              <span className="text-xs font-semibold text-ink-disabled">다음 과정 →</span>
+              <div className="mt-1 font-bold text-ink-strong group-hover:text-royal">
+                {otherTopic.topicNo === 1 ? '주제 ①' : '주제 ②'} {otherTopic.title}
+              </div>
             </Link>
           )}
         </nav>
